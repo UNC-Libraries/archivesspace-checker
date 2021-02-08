@@ -1,16 +1,5 @@
 require './config/environment'
-Bundler.require(:test)
 
-# Need to comment out the rake/testtask block to build war file
-require 'rake/testtask'
-
-Rake::TestTask.new do |t|
-  t.test_files = FileList['test/test*.rb']
-  t.verbose = true
-  t.warning = false
-end
-
-task :default => :test
 
 # rake analyze_eads EADS=/path/to/EADs FILE=/path/to/schematron
 desc "Run ArchivesSpace Checker over a set of EADs."
