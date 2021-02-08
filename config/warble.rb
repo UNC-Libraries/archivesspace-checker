@@ -12,7 +12,7 @@ Warbler::Config.new do |config|
   config.features = %w(compiled)
 
   # Application directories to be included in the webapp.
-  config.dirs = %w(config tmp public views schematron)
+  config.dirs = %w(config tmp views schematron)
 
   # Additional files/directories to include, above those in config.dirs
   # config.includes = FileList["db"]
