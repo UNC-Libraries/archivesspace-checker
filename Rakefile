@@ -1,6 +1,7 @@
 require './config/environment'
 Bundler.require(:test)
 
+# Need to comment out the rake/testtask block to build war file
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|

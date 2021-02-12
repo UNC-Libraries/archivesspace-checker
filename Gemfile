@@ -26,3 +26,4 @@ gem 'schematronium', '~> 0.1.0'
 gem 'ffi'
 gem 'saxon-xslt'
 gem 'nokogiri'
+gem 'warbler' # Compiles code to a WAR file
