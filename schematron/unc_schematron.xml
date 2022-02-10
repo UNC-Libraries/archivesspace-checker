@@ -25,6 +25,7 @@
     <active pattern="ptrgrp-manual" />
     <active pattern="nested-list-manual" />
     <active pattern="abstract-manual" />
+    <active pattern="component-manual" />
     <active pattern="langcode-manual" />
   </phase>
 
@@ -355,6 +356,15 @@
     </rule>
   </pattern>
 
+  <pattern id="component-manual">
+    <rule context="//*:c|//*:c01|//*:c02|//*:c03|//*:c04|//*:c05|//*:c06|//*:c07|//*:c08|//*:c09|//*:c10|//*:c11|//*:c12">
+    <!-- 'component' elements, any numbered or unnumbered -->
+      <assert test="not(@id)" diagnostics="component-id">
+        'component' elements must not contain an 'id' attribute (because Aspace would import it as a ref_id)
+      </assert>
+    </rule>
+  </pattern>
+
   <pattern id="langcode-manual">
       <rule context="//*:language[@langcode]">
       <!-- 'langcode' attribute of any language element-->
@@ -471,6 +481,7 @@
     <diagnostic id="controlaccess-2">Ref-number: AS-98</diagnostic>
     <diagnostic id="controlaccess-3">Ref-number: AS-243</diagnostic>
     <diagnostic id="abstract">Ref-number: AS-243</diagnostic>
+    <diagnostic id="component-id">Ref-number: AS-236</diagnostic>
     <diagnostic id="date-type">Ref-number: AS-243</diagnostic>
     <diagnostic id="date-title">Ref-number: AS-243</diagnostic>
     <diagnostic id="langcode">Ref-number: AS-243</diagnostic>
