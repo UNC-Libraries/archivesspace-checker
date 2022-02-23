@@ -12,6 +12,7 @@
     <active pattern="change-manual" />
     <active pattern="controlaccess-manual" />
     <active pattern="date-unitdate-manual" />
+    <active pattern="date-type-manual" />
     <active pattern="container-manual" />
     <active pattern="any-manual" />
     <active pattern="unitid-manual" />
@@ -23,6 +24,9 @@
     <active pattern="bibliography-manual" />
     <active pattern="ptrgrp-manual" />
     <active pattern="nested-list-manual" />
+    <active pattern="abstract-manual" />
+    <active pattern="component-manual" />
+    <active pattern="langcode-manual" />
   </phase>
 
   <pattern id="descgrp-manual">
@@ -68,6 +72,10 @@
       <!-- 'did' elements (anywhere below collection-level)-->
       <assert test=".[*:unitdate or *:unittitle/*:unitdate] or (.[*:unittitle] and ./*:unittitle/descendant-or-self::*/text()[normalize-space(.)])" diagnostics="didm-4">
         'did' elements must contain a either a 'unitdate' element, a non-empty 'unittitle' element or both.
+      </assert>
+
+      <assert test="*:unitdate/descendant-or-self::*/text()[normalize-space(.)] or *:unittitle/descendant-or-self::*/text()[normalize-space(.)]" diagnostics="date-title">
+        'did' elements must contain a unittitle or unitdate (or both) that contains text or a descendant that contains text
       </assert>
     </rule>
 
@@ -127,6 +135,25 @@
       </assert>
     </rule>
 
+  </pattern>
+
+  <pattern id="date-type-manual">
+      <rule context="/*:ead/*:archdesc/*[not(local-name(.) = 'did')]//*:did//*:unitdate[@type]">
+      <!-- unitdate elements in 'did' elements anywhere below collection-level-->
+
+      <!-- Note: Allowed date-type for 'date' elements differ from those allowed
+           for 'unitdate' elements. For example, 'date' elements allow 'span'.
+      -->
+      <!-- This rule won't detect extra whitespace in the type. For example,
+           it will NOT detect a unitdate like:
+            <unitdate type="inclusive ">
+           It may be possible to detect the whitespace, but in the ways I've tried
+           to test, the attribute value seems to already have been normalized.
+      -->
+      <assert test="@type = ('bulk', 'inclusive', 'range', 'single')" diagnostics="date-type">
+        '<value-of select="@type" />' is not an allowed date type. 'did' date types must be one of: bulk, inclusive, range, single
+      </assert>
+    </rule>
   </pattern>
 
 
@@ -251,8 +278,17 @@
       <assert test=".[*:date and *:item]" diagnostics="change-1">
         'revisiondesc/change' element must contain both a date and an item subelement.
       </assert>
+
+      <!-- Unsure whether Aspace requires both date and item subelements must
+        contain text or if at least one must contain text. Regardless, this test
+        requires both to contain text.
+       -->
+      <assert test="*:date/text()[normalize-space(.)] and ./*:item/text()[normalize-space(.)]" diagnostics="change-2">
+        'revisiondesc/change' date and item subelements must contain text
+      </assert>
     </rule>
   </pattern>
+
   <pattern id="name-manual">
     <rule context="//*:name">
       <!-- 'name' element -->
@@ -297,6 +333,81 @@
       <!-- 'controlaccess/list' elements -->
       <assert test="./ancestor::*/controlaccess" diagnostics="controlaccess-2">
         Lists containing 'corpname', 'persname', 'famname', 'function', 'genreform', 'geogname', 'occupation', 'subject', or 'title' elements can only be parsed as children of 'controlaccess' elements.
+      </assert>
+    </rule>
+
+    <rule context="//*:item/*:corpname|//*:item/*:persname|//*:item/*:famname|
+                   //*:item/*:function|//*:item/*:genreform|//*:item/*:geogname|
+                   //*:item/*:occupation|//*:item/*:subject|
+                   //*:item/*:title">
+      <!-- 'controlaccess' children (that are migrating/valid)-->
+      <assert test="text()[normalize-space(.)]" diagnostics="controlaccess-3">
+        'controlaccess' children must contain text
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="abstract-manual">
+    <rule context="//*:abstract">
+    <!-- 'abstract' elements -->
+      <assert test="text()[normalize-space(.)]" diagnostics="abstract">
+        'abstract' elements must contain text
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="component-manual">
+    <rule context="//*:c|//*:c01|//*:c02|//*:c03|//*:c04|//*:c05|//*:c06|//*:c07|//*:c08|//*:c09|//*:c10|//*:c11|//*:c12">
+    <!-- 'component' elements, any numbered or unnumbered -->
+      <assert test="not(@id)" diagnostics="component-id">
+        'component' elements must not contain an 'id' attribute (because Aspace would import it as a ref_id)
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="langcode-manual">
+      <rule context="//*:language[@langcode]">
+      <!-- 'langcode' attribute of any language element-->
+      <assert test="@langcode = ('eng', 'aar', 'abk', 'ace', 'ach', 'ada', 'ady', 'afa', 'afh',
+        'afr', 'ain', 'aka', 'akk', 'alb', 'ale', 'alg', 'alt', 'amh', 'ang', 'anp', 'apa', 'ara',
+        'arc', 'arg', 'arm', 'arn', 'arp', 'art', 'arw', 'asm', 'ast', 'ath', 'aus', 'ava', 'ave',
+        'awa', 'aym', 'aze', 'bad', 'bai', 'bak', 'bal', 'bam', 'ban', 'baq', 'bas', 'bat', 'bej',
+        'bel', 'bem', 'ben', 'ber', 'bho', 'bih', 'bik', 'bin', 'bis', 'bla', 'bnt', 'bos', 'bra',
+        'bre', 'btk', 'bua', 'bug', 'bul', 'bur', 'byn', 'cad', 'cai', 'car', 'cat', 'cau', 'ceb',
+        'cel', 'cha', 'chb', 'che', 'chg', 'chi', 'chk', 'chm', 'chn', 'cho', 'chp', 'chr', 'chu',
+        'chv', 'chy', 'cmc', 'cop', 'cor', 'cos', 'cpe', 'cpf', 'cpp', 'cre', 'crh', 'crp', 'csb',
+        'cus', 'cze', 'dak', 'dan', 'dar', 'day', 'del', 'den', 'dgr', 'din', 'div', 'doi', 'dra',
+        'dsb', 'dua', 'dum', 'dut', 'dyu', 'dzo', 'efi', 'egy', 'eka', 'elx', 'eng', 'enm', 'epo',
+        'est', 'ewe', 'ewo', 'fan', 'fao', 'fat', 'fij', 'fil', 'fin', 'fiu', 'fon', 'fre', 'frm',
+        'fro', 'frr', 'frs', 'fry', 'ful', 'fur', 'gaa', 'gay', 'gba', 'gem', 'geo', 'ger', 'gez',
+        'gil', 'gla', 'gle', 'glg', 'glv', 'gmh', 'goh', 'gon', 'gor', 'got', 'grb', 'grc', 'gre',
+        'grn', 'gsw', 'guj', 'gwi', 'hai', 'hat', 'hau', 'haw', 'heb', 'her', 'hil', 'him', 'hin',
+        'hit', 'hmn', 'hmo', 'hrv', 'hsb', 'hun', 'hup', 'iba', 'ibo', 'ice', 'ido', 'iii', 'ijo',
+        'iku', 'ile', 'ilo', 'ina', 'inc', 'ind', 'ine', 'inh', 'ipk', 'ira', 'iro', 'ita', 'jav',
+        'jbo', 'jpn', 'jpr', 'jrb', 'kaa', 'kab', 'kac', 'kal', 'kam', 'kan', 'kar', 'kas', 'kau',
+        'kaw', 'kaz', 'kbd', 'kha', 'khi', 'khm', 'kho', 'kik', 'kin', 'kir', 'kmb', 'kok', 'kom',
+        'kon', 'kor', 'kos', 'kpe', 'krc', 'krl', 'kro', 'kru', 'kua', 'kum', 'kur', 'kut', 'lad',
+        'lah', 'lam', 'lao', 'lat', 'lav', 'lez', 'lim', 'lin', 'lit', 'lol', 'loz', 'ltz', 'lua',
+        'lub', 'lug', 'lui', 'lun', 'luo', 'lus', 'mac', 'mad', 'mag', 'mah', 'mai', 'mak', 'mal',
+        'man', 'mao', 'map', 'mar', 'mas', 'may', 'mdf', 'mdr', 'men', 'mga', 'mic', 'min', 'mis',
+        'mkh', 'mlg', 'mlt', 'mnc', 'mni', 'mno', 'moh', 'mon', 'mos', 'mul', 'mun', 'mus', 'mwl',
+        'mwr', 'myn', 'myv', 'nah', 'nai', 'nap', 'nau', 'nav', 'nbl', 'nde', 'ndo', 'nds', 'nep',
+        'new', 'nia', 'nic', 'niu', 'nno', 'nob', 'nog', 'non', 'nor', 'nqo', 'nso', 'nub', 'nwc',
+        'nya', 'nym', 'nyn', 'nyo', 'nzi', 'oci', 'oji', 'ori', 'orm', 'osa', 'oss', 'ota', 'oto',
+        'paa', 'pag', 'pal', 'pam', 'pan', 'pap', 'pau', 'peo', 'per', 'phi', 'phn', 'pli', 'pol',
+        'pon', 'por', 'pra', 'pro', 'pus', 'que', 'raj', 'rap', 'rar', 'roa', 'roh', 'rom', 'rum',
+        'run', 'rup', 'rus', 'sad', 'sag', 'sah', 'sai', 'sal', 'sam', 'san', 'sas', 'sat', 'scn',
+        'sco', 'sel', 'sem', 'sga', 'sgn', 'shn', 'sid', 'sin', 'sio', 'sit', 'sla', 'slo', 'slv',
+        'sma', 'sme', 'smi', 'smj', 'smn', 'smo', 'sms', 'sna', 'snd', 'snk', 'sog', 'som', 'son',
+        'sot', 'spa', 'srd', 'srn', 'srp', 'srr', 'ssa', 'ssw', 'suk', 'sun', 'sus', 'sux', 'swa',
+        'swe', 'syc', 'syr', 'tah', 'tai', 'tam', 'tat', 'tel', 'tem', 'ter', 'tet', 'tgk', 'tgl',
+        'tha', 'tib', 'tig', 'tir', 'tiv', 'tkl', 'tlh', 'tli', 'tmh', 'tog', 'ton', 'tpi', 'tsi',
+        'tsn', 'tso', 'tuk', 'tum', 'tup', 'tur', 'tut', 'tvl', 'twi', 'tyv', 'udm', 'uga', 'uig',
+        'ukr', 'umb', 'und', 'urd', 'uzb', 'vai', 'ven', 'vie', 'vol', 'vot', 'wak', 'wal', 'war',
+        'was', 'wel', 'wen', 'wln', 'wol', 'xal', 'xho', 'yao', 'yap', 'yid', 'yor', 'ypk', 'zap',
+        'zbl', 'zen', 'zha', 'znd', 'zul', 'zun', 'zxx', 'zza', 'cnr', 'zgh')"
+      diagnostics="langcode">
+        '<value-of select="@langcode" />' is not an allowed language code.
       </assert>
     </rule>
   </pattern>
@@ -359,6 +470,7 @@
     <diagnostic id="change-1">Ref-number: AS-38
       Content: [Shouldn't exist in UNC EAD]
     </diagnostic>
+    <diagnostic id="change-2">Ref-number: AS-243</diagnostic>
     <diagnostic id="name-1">Ref-number: AS-38
       Content: encodinganalog value is '<value-of select="./@encodinganalog" />', local practice at Harvard is to represent values according to the following mappings: 110,111,710=corpname, 130,240,245=title, 610,611,630,650,654=subject, 651=geogname, 700=persname</diagnostic>
     <diagnostic id="ptrgrp-1">Ref-number: AS-38
@@ -367,6 +479,12 @@
     <diagnostic id="nested-list-1">Ref-number: AS-55</diagnostic>
     <diagnostic id="controlaccess-1">Ref-number: AS-49</diagnostic>
     <diagnostic id="controlaccess-2">Ref-number: AS-98</diagnostic>
+    <diagnostic id="controlaccess-3">Ref-number: AS-243</diagnostic>
+    <diagnostic id="abstract">Ref-number: AS-243</diagnostic>
+    <diagnostic id="component-id">Ref-number: AS-236</diagnostic>
+    <diagnostic id="date-type">Ref-number: AS-243</diagnostic>
+    <diagnostic id="date-title">Ref-number: AS-243</diagnostic>
+    <diagnostic id="langcode">Ref-number: AS-243</diagnostic>
 
     <!--  Logic seems wrong and duplicative?:  -->
     <!--    <diagnostic id="note-1">Ref-number: AS-38</diagnostic>  -->
@@ -384,13 +502,13 @@
     <!--    Seems to handle nested elements fine now.  -->
     <!--      <diagnostic id="da-3">Ref-number: AS-38  -->
     <!--        Content: '<value-of select="local-name(.)" />' element can be moved out of 'descgrp element into surrounding '<value-of select="local-name(./../..)" />'</diagnostic>  -->
-    
+
     <!--  Fine:  -->
     <!--    We're okay with using default mixed_media instance type -->
     <!--      <diagnostic id="ca-2">Ref-number: AS-38</diagnostic>  -->
     <!--    We're okay with not populating unitdate certainty attribute  -->
     <!--      <diagnostic id="dua-2">Ref-number: AS-38</diagnostic>  -->
-    
+
     <!--  Handled in UncEADConverter:  -->
     <!--    Missing unitid handled in UncEADConverter  -->
     <!--      <diagnostic id="didm-1">Ref-number: APPDEV-9598</diagnostic>  -->
