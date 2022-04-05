@@ -57,6 +57,14 @@
         Collection level 'did' element must contain a 'unitdate' element.
       </assert>
 
+      <!-- date values are carried either in a text node or a 'normal' attribute-->
+      <assert test="*:unitdate/descendant-or-self::*/text()[normalize-space(.)] or
+                    *:unittitle/*:unitdate/descendant-or-self::*/text()[normalize-space(.)] or
+                    *:unitdate/@normal or
+                    *:unittitle/*:unitdate/@normal" diagnostics="didm-3a">
+        Collection level 'did' elements must contain a 'unitdate' element with text or a 'normal' attribute.
+      </assert>
+
       <assert test=".[*:physdesc/*:extent] or (.[*:physdesc] and lower-case(./*:physdesc/@label) = 'extent')"
               diagnostics="didm-5">
         Collection level 'did' element must contain 'physdesc' element with 'extent' child or text.
@@ -421,6 +429,7 @@
     <diagnostic id="didm-2">Ref-number: AS-54</diagnostic>
     <diagnostic id="didm-2a">Ref-number: AS-54</diagnostic>
     <diagnostic id="didm-3">Ref-number: AS-54</diagnostic>
+    <diagnostic id="didm-3a">Ref-number: AS-296</diagnostic>
     <diagnostic id="didm-5">Ref-number: AS-54</diagnostic>
     <diagnostic id="didm-5a">Ref-number: AS-60
       Content: Value is "<value-of select="." />" with unit attribute "<value-of select="./@unit" />"</diagnostic>
