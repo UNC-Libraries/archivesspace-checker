@@ -27,6 +27,10 @@
     <active pattern="abstract-manual" />
     <active pattern="component-manual" />
     <active pattern="langcode-manual" />
+    <active pattern="accessrestrict-manual" />
+    <active pattern="prefercite-manual" />
+    <active pattern="userestrict-manual" />
+    <active pattern="arrangement-manual" />
   </phase>
 
   <pattern id="descgrp-manual">
@@ -420,6 +424,38 @@
     </rule>
   </pattern>
 
+  <pattern id="accessrestrict-manual">
+    <rule context="/">
+      <assert test="//*:accessrestrict/descendant-or-self::*/text()[normalize-space(.)]" diagnostics="accessrestrict">
+        EAD must contain an accessrestrict note that contains text
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="prefercite-manual">
+    <rule context="/">
+      <assert test="//*:prefercite/descendant-or-self::*/text()[normalize-space(.)]" diagnostics="prefercite">
+        EAD must contain an prefercite note that contains text
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="userestrict-manual">
+    <rule context="/">
+      <assert test="//*:userestrict/descendant-or-self::*/text()[normalize-space(.)]" diagnostics="userestrict">
+        EAD must contain an userestrict note that contains text
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="arrangement-manual">
+    <rule context="/">
+      <assert test="//*:arrangement/descendant-or-self::*/text()[normalize-space(.)]" diagnostics="arrangement">
+        EAD must contain an arrangement note that contains text
+      </assert>
+    </rule>
+  </pattern>
+
   <diagnostics>
     <diagnostic id="dm-1">Ref-number: AS-38
       Content: [Shouldn't exist in UNC EAD]
@@ -494,6 +530,10 @@
     <diagnostic id="date-type">Ref-number: AS-243</diagnostic>
     <diagnostic id="date-title">Ref-number: AS-243</diagnostic>
     <diagnostic id="langcode">Ref-number: AS-243</diagnostic>
+    <diagnostic id="accessrestrict">Ref-number: AS-311</diagnostic>
+    <diagnostic id="prefercite">Ref-number: AS-311</diagnostic>
+    <diagnostic id="userestrict">Ref-number: AS-311</diagnostic>
+    <diagnostic id="arrangement">Ref-number: AS-311</diagnostic>
 
     <!--  Logic seems wrong and duplicative?:  -->
     <!--    <diagnostic id="note-1">Ref-number: AS-38</diagnostic>  -->
