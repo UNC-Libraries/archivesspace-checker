@@ -26,6 +26,7 @@
     <active pattern="nested-list-manual" />
     <active pattern="abstract-manual" />
     <active pattern="component-manual" />
+    <active pattern="extref-manual" />
     <active pattern="langcode-manual" />
   </phase>
 
@@ -373,6 +374,15 @@
     </rule>
   </pattern>
 
+  <pattern id="extref-manual">
+    <rule context="//did//container//extref">
+    <!-- 'extref' elements that are migrating (i.e. fall under //did//container) -->
+      <assert test="@href and not(@href = '')" diagnostics="extref-href">
+        migrating 'extref' elements must have a non-empty href attribute
+      </assert>
+    </rule>
+  </pattern>
+
   <pattern id="langcode-manual">
       <rule context="//*:language[@langcode]">
       <!-- 'langcode' attribute of any language element-->
@@ -494,6 +504,8 @@
     <diagnostic id="date-type">Ref-number: AS-243</diagnostic>
     <diagnostic id="date-title">Ref-number: AS-243</diagnostic>
     <diagnostic id="langcode">Ref-number: AS-243</diagnostic>
+    <diagnostic id="extref-href">Ref-number: AS-317</diagnostic>
+
 
     <!--  Logic seems wrong and duplicative?:  -->
     <!--    <diagnostic id="note-1">Ref-number: AS-38</diagnostic>  -->
