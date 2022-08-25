@@ -5,6 +5,7 @@
 
   <phase id="manual">
     <active pattern="descgrp-manual" />
+    <active pattern="ead-id-attr-manual" />
     <active pattern="did-manual" />
     <active pattern="table-manual" />
     <active pattern="daodesc-manual" />
@@ -46,6 +47,15 @@
     </rule>
   </pattern>
 
+  <pattern id="ead-id-attr-manual">
+    <rule context="/*:ead">
+    <!-- 'id' attribute of root ead element-->
+    <assert test="@id = ('ncc', 'nccpa', 'nccu', 'nccu-offsite', 'rbc', 'sfc', 'shc', 'ua', 'ulgac')" diagnostics="ead-id-attr">
+        '<value-of select="@id" />' is blank or an unrecognized repo/collecting-unit code
+    </assert>
+    </rule>
+  </pattern>
+
   <pattern id="did-manual">
 
     <rule context="/*:ead/*:archdesc/*:did">
@@ -83,8 +93,10 @@
         'did' elements must contain a either a 'unitdate' element, a non-empty 'unittitle' element or both.
       </assert>
 
-      <assert test="*:unitdate/descendant-or-self::*/text()[normalize-space(.)] or *:unittitle/descendant-or-self::*/text()[normalize-space(.)]" diagnostics="date-title">
-        'did' elements must contain a unittitle or unitdate (or both) that contains text or a descendant that contains text
+      <assert test="*:unittitle/descendant-or-self::*/text()[normalize-space(.)]" diagnostics="date-title">
+        <!-- Aspace will accept either a unittitle or unitdate here, but per AS-350 we are
+             requiring a unittitle -->
+        'did' elements must contain a unittitle that contains text (or a descendant that contains text)
       </assert>
     </rule>
 
@@ -502,10 +514,10 @@
     <diagnostic id="abstract">Ref-number: AS-243</diagnostic>
     <diagnostic id="component-id">Ref-number: AS-236</diagnostic>
     <diagnostic id="date-type">Ref-number: AS-243</diagnostic>
-    <diagnostic id="date-title">Ref-number: AS-243</diagnostic>
+    <diagnostic id="date-title">Ref-number: AS-350/AS-243</diagnostic>
     <diagnostic id="langcode">Ref-number: AS-243</diagnostic>
     <diagnostic id="extref-href">Ref-number: AS-317</diagnostic>
-
+    <diagnostic id="ead-id-attr">Ref-number: AS-329</diagnostic>
 
     <!--  Logic seems wrong and duplicative?:  -->
     <!--    <diagnostic id="note-1">Ref-number: AS-38</diagnostic>  -->

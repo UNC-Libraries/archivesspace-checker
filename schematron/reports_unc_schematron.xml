@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2">
+  <ns uri="http://www.w3.org/1999/xlink" prefix="xlink"/>
+  <ns uri="urn:isbn:1-931666-22-9" prefix="ead"/>
+
+  <phase id="manual">
+    <active pattern="nonmigrating-extref-attributes" />
+    <active pattern="migrating-extref-attributes" />
+    <active pattern="extref-container-types" />
+    <active pattern="containerized-extrefs" />
+    <active pattern="audience" />
+  </phase>
+
+    <pattern id="nonmigrating-extref-attributes">
+    <rule context="//extref">
+    <!-- nonmigrating 'extref' elements (i.e. fall outside of a 'c0x') -->
+    <!-- we assume that any c0x is a c01 or descendant of a c01-->
+      <report test="not(ancestor::c01) and (@role or @show or @actuate or @audience)" diagnostics="nonmigrating-extref-attributes">
+        nonmigrating extref attrs: '<value-of select="@role" />';'<value-of select="@show" />';'<value-of select="@actuate" />';'<value-of select="@audience" />';
+      </report>
+      <report test="not(ancestor::c01)" diagnostics="nonmigrating-extref-attributes">
+        nonmigrating extref href/text: href: '<value-of select="@href" />' text: '<value-of select="." />'
+      </report>
+    </rule>
+  </pattern>
+
+  <pattern id="migrating-extref-attributes">
+    <rule context="//*:c//extref|//*:c01//extref|//*:c02//extref|//*:c03//extref|//*:c04//extref|//*:c05//extref|//*:c06//extref|//*:c07//extref|//*:c08//extref|//*:c09//extref|//*:c10//extref|//*:c11//extref|//*:c12//extref">
+    <!-- 'extref' elements that are migrating (i.e. fall under a 'c0x' element) -->
+      <report test="(@role or @show or @actuate or @audience)" diagnostics="extref-attributes">
+        migrating extref attrs: '<value-of select="@role" />';'<value-of select="@show" />';'<value-of select="@actuate" />';'<value-of select="@audience" />';
+      </report>
+      <report test="not(@role or @show or @actuate or @audience)" diagnostics="extref-attributes">
+        migrating extref attrs: none
+      </report>
+      <report test="not(ancestor::container) and (matches(., '^[\s&#x9;]*[A-Z]+-\S*[\s&#x9;]*$'))" diagnostics="noncontainerized-extref-dfdi-identifiers">
+        noncontainerized migrating extref has DF/DI-like tag: '<value-of select="." />'
+      </report>
+    </rule>
+  </pattern>
+
+  <pattern id="extref-container-types">
+    <rule context="//did//container">
+    <!-- any 'container' element under a 'did'-->
+      <report test=".//extref and not(@type='digfolder' or @type='digitem')" diagnostics="containzerized-extref-container-types">
+        containerized extref with non df/di type: '<value-of select="@type" />'
+      </report>
+    </rule>
+  </pattern>
+
+  <pattern id="containerized-extrefs">
+    <rule context="//did//container//extref">
+    <!-- any containerized 'extref' element -->
+    <!-- We want this to report any text that does not match ruby's /^\s*D[FI]-\S+\s*$/
+         but it seems like XSLT flavor of regexp \s does not include tab -->
+      <report test="not(matches(., '^[\s&#x9;]*D[FI]-\S*[\s&#x9;]*$'))" diagnostics="containerized-extref-identifiers">
+        extref with non DF/DI identifier text: '<value-of select="." />'
+      </report>
+    </rule>
+  </pattern>
+
+  <pattern id="audience">
+    <rule context="//*[@audience]">
+    <!-- any element with an 'audience' attr -->
+      <report test="@audience and not(local-name(.) = 'eadheader')" diagnostics="audience-attributes">
+        audience: '<value-of select="@audience" />'
+      </report>
+    </rule>
+  </pattern>
+
+  <diagnostics>
+    <diagnostic id="nonmigrating-extref-attributes">Ref-number: AS-326</diagnostic>
+    <diagnostic id="extref-attributes">Ref-number: AS-326</diagnostic>
+    <diagnostic id="noncontainerized-extref-dfdi-identifiers">Ref-number: AS-353</diagnostic>
+    <diagnostic id="containzerized-extref-container-types">Ref-number: AS-353</diagnostic>
+    <diagnostic id="containerized-extref-identifiers">Ref-number: AS-353</diagnostic>
+    <diagnostic id="audience-attributes">Ref-number: AS-326 (tangent)</diagnostic>
+  </diagnostics>
+</schema>
