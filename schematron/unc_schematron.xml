@@ -28,6 +28,7 @@
     <active pattern="abstract-manual" />
     <active pattern="component-manual" />
     <active pattern="extref-manual" />
+    <active pattern="digcontainer-manual" />
     <active pattern="langcode-manual" />
   </phase>
 
@@ -395,6 +396,16 @@
     </rule>
   </pattern>
 
+  <pattern id="digcontainer-manual">
+    <rule context="//*:container[@type = 'digfolder' or @type = 'digitem']">
+      <!-- 'container' element of type digfolder/digitem -->
+      <!-- other container types MAY contain migrating extrefs but only
+           digfolder/digitem container MUST contain an extref-->
+      <assert test=".//extref" diagnostics="digcontainer-extref">
+        'container' elements of type digfolder/digitem must contain an 'extref' element.
+      </assert>
+    </rule>
+  </pattern>
   <pattern id="langcode-manual">
       <rule context="//*:language[@langcode]">
       <!-- 'langcode' attribute of any language element-->
@@ -516,7 +527,7 @@
     <diagnostic id="date-type">Ref-number: AS-243</diagnostic>
     <diagnostic id="date-title">Ref-number: AS-350/AS-243</diagnostic>
     <diagnostic id="langcode">Ref-number: AS-243</diagnostic>
-    <diagnostic id="extref-href">Ref-number: AS-317</diagnostic>
+    <diagnostic id="digcontainer-extref">Ref-number: AS-352</diagnostic>
     <diagnostic id="ead-id-attr">Ref-number: AS-329</diagnostic>
 
     <!--  Logic seems wrong and duplicative?:  -->
