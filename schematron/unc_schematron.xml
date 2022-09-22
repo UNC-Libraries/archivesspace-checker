@@ -388,8 +388,14 @@
   </pattern>
 
   <pattern id="extref-manual">
-    <rule context="//did//container//extref">
-    <!-- 'extref' elements that are migrating (i.e. fall under //did//container) -->
+    <rule context="//did/container//extref|//*:c/did//unittitle//extref|//*:c01/did//unittitle//extref|//*:c02/did//unittitle//extref|//*:c03/did//unittitle//extref|//*:c04/did//unittitle//extref|//*:c05/did//unittitle//extref|//*:c06/did//unittitle//extref|//*:c07/did//unittitle//extref|//*:c08/did//unittitle//extref|//*:c09/did//unittitle//extref|//*:c10/did//unittitle//extref|//*:c11/did//unittitle//extref|//*:c12/did//unittitle//extref">
+      <!-- 'extref' elements that are migrating, i.e. fall under one of:
+              - //c0x/did/container//extref
+              - //c0x/did//unittitle//extref
+            Note we do not need to specify the c0x in the container context xpath
+            because another rule already ensures no containers in a collection
+            level 'did'
+      -->
       <assert test="@href and not(@href = '')" diagnostics="extref-href">
         migrating 'extref' elements must have a non-empty href attribute
       </assert>
@@ -527,6 +533,7 @@
     <diagnostic id="date-type">Ref-number: AS-243</diagnostic>
     <diagnostic id="date-title">Ref-number: AS-350/AS-243</diagnostic>
     <diagnostic id="langcode">Ref-number: AS-243</diagnostic>
+    <diagnostic id="extref-href">Ref-number: AS-317, AS-358</diagnostic>
     <diagnostic id="digcontainer-extref">Ref-number: AS-352</diagnostic>
     <diagnostic id="ead-id-attr">Ref-number: AS-329</diagnostic>
 
