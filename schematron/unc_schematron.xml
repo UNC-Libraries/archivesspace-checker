@@ -29,6 +29,8 @@
     <active pattern="component-manual" />
     <active pattern="extref-manual" />
     <active pattern="digcontainer-manual" />
+    <active pattern="containerized-extref-manual" />
+    <active pattern="migrating-noncontainerized-extref-manual" />
     <active pattern="langcode-manual" />
   </phase>
 
@@ -412,6 +414,27 @@
       </assert>
     </rule>
   </pattern>
+
+  <pattern id="containerized-extref-manual">
+    <rule context="//did/container[descendant::extref]">
+      <!-- any 'container' element with an extref-->
+      <!-- We want this to report any text that does not match ruby's /^\s*(DF|DI|etc)-\S+\s*$/
+           but it seems like XSLT flavor of regexp \s does not include tab -->
+      <assert test="matches(.//extref, '^[\s&#x9;]*(DF|DI|DCD|FLD|EKAAMP)-\S*[\s&#x9;]*$')" diagnostics="containerized-extref-identifiers">
+        containerized extrefs must contain DF/DI identifier text. Found: '<value-of select="normalize-space(.//extref)" />'
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="migrating-noncontainerized-extref-manual">
+    <rule context="//*:c/did//unittitle//extref|//*:c01/did//unittitle//extref|//*:c02/did//unittitle//extref|//*:c03/did//unittitle//extref|//*:c04/did//unittitle//extref|//*:c05/did//unittitle//extref|//*:c06/did//unittitle//extref|//*:c07/did//unittitle//extref|//*:c08/did//unittitle//extref|//*:c09/did//unittitle//extref|//*:c10/did//unittitle//extref|//*:c11/did//unittitle//extref|//*:c12/did//unittitle//extref">
+      <!-- migrating noncontainzerized 'extref' elements -->
+      <assert test="not(matches(., '^[\s&#x9;]*[A-Z]+-\S*[\s&#x9;]*$'))" diagnostics="noncontainerized-extref-dfdi-identifiers">
+        noncontainerized migrating extrefs should not have DF/DI identifier-like text:  Found: '<value-of select="normalize-space(.)" />'
+      </assert>
+    </rule>
+  </pattern>
+
   <pattern id="langcode-manual">
       <rule context="//*:language[@langcode]">
       <!-- 'langcode' attribute of any language element-->
@@ -535,6 +558,8 @@
     <diagnostic id="langcode">Ref-number: AS-243</diagnostic>
     <diagnostic id="extref-href">Ref-number: AS-317, AS-358</diagnostic>
     <diagnostic id="digcontainer-extref">Ref-number: AS-352</diagnostic>
+    <diagnostic id="containerized-extref-identifiers">Ref-number: AS-XXX/AS-353 TODO/TBD</diagnostic>
+    <diagnostic id="noncontainerized-extref-dfdi-identifiers">Ref-number: AS-XXX/AS-353 TODO/TBD</diagnostic>
     <diagnostic id="ead-id-attr">Ref-number: AS-329</diagnostic>
 
     <!--  Logic seems wrong and duplicative?:  -->

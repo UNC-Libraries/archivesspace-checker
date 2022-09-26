@@ -7,7 +7,6 @@
     <active pattern="nonmigrating-extref-attributes" />
     <active pattern="migrating-extref-attributes" />
     <active pattern="extref-container-types" />
-    <active pattern="containerized-extrefs" />
     <active pattern="audience" />
   </phase>
 
@@ -33,9 +32,6 @@
       <report test="not(@role or @show or @actuate or @audience)" diagnostics="extref-attributes">
         migrating extref attrs: none
       </report>
-      <report test="not(ancestor::container) and (matches(., '^[\s&#x9;]*[A-Z]+-\S*[\s&#x9;]*$'))" diagnostics="noncontainerized-extref-dfdi-identifiers">
-        noncontainerized migrating extref has DF/DI-like tag: '<value-of select="." />'
-      </report>
     </rule>
   </pattern>
 
@@ -46,17 +42,6 @@
          this identifies those non-digfolder/digitem container types-->
       <report test="not(@type='digfolder' or @type='digitem')" diagnostics="containzerized-extref-container-types">
         containerized extref with non df/di type: '<value-of select="@type" />'
-      </report>
-    </rule>
-  </pattern>
-
-  <pattern id="containerized-extrefs">
-    <rule context="//did/container//extref">
-    <!-- any containerized 'extref' element -->
-    <!-- We want this to report any text that does not match ruby's /^\s*D[FI]-\S+\s*$/
-         but it seems like XSLT flavor of regexp \s does not include tab -->
-      <report test="not(matches(., '^[\s&#x9;]*D[FI]-\S*[\s&#x9;]*$'))" diagnostics="containerized-extref-identifiers">
-        extref with non DF/DI identifier text: '<value-of select="." />'
       </report>
     </rule>
   </pattern>
@@ -73,9 +58,7 @@
   <diagnostics>
     <diagnostic id="nonmigrating-extref-attributes">Ref-number: AS-326</diagnostic>
     <diagnostic id="extref-attributes">Ref-number: AS-326</diagnostic>
-    <diagnostic id="noncontainerized-extref-dfdi-identifiers">Ref-number: AS-353</diagnostic>
     <diagnostic id="containzerized-extref-container-types">Ref-number: AS-353</diagnostic>
-    <diagnostic id="containerized-extref-identifiers">Ref-number: AS-353</diagnostic>
     <diagnostic id="audience-attributes">Ref-number: AS-326 (tangent)</diagnostic>
   </diagnostics>
 </schema>
