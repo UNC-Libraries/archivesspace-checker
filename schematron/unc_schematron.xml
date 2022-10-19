@@ -28,6 +28,9 @@
     <active pattern="abstract-manual" />
     <active pattern="component-manual" />
     <active pattern="extref-manual" />
+    <active pattern="digcontainer-manual" />
+    <active pattern="containerized-extref-manual" />
+    <active pattern="migrating-noncontainerized-extref-manual" />
     <active pattern="langcode-manual" />
   </phase>
 
@@ -387,10 +390,47 @@
   </pattern>
 
   <pattern id="extref-manual">
-    <rule context="//did//container//extref">
-    <!-- 'extref' elements that are migrating (i.e. fall under //did//container) -->
+    <rule context="//did/container//extref|//*:c/did//unittitle//extref|//*:c01/did//unittitle//extref|//*:c02/did//unittitle//extref|//*:c03/did//unittitle//extref|//*:c04/did//unittitle//extref|//*:c05/did//unittitle//extref|//*:c06/did//unittitle//extref|//*:c07/did//unittitle//extref|//*:c08/did//unittitle//extref|//*:c09/did//unittitle//extref|//*:c10/did//unittitle//extref|//*:c11/did//unittitle//extref|//*:c12/did//unittitle//extref">
+      <!-- 'extref' elements that are migrating, i.e. fall under one of:
+              - //c0x/did/container//extref
+              - //c0x/did//unittitle//extref
+            Note we do not need to specify the c0x in the container context xpath
+            because another rule already ensures no containers in a collection
+            level 'did'
+      -->
       <assert test="@href and not(@href = '')" diagnostics="extref-href">
         migrating 'extref' elements must have a non-empty href attribute
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="digcontainer-manual">
+    <rule context="//*:container[@type = 'digfolder' or @type = 'digitem']">
+      <!-- 'container' element of type digfolder/digitem -->
+      <!-- other container types MAY contain migrating extrefs but only
+           digfolder/digitem container MUST contain an extref-->
+      <assert test=".//extref" diagnostics="digcontainer-extref">
+        'container' elements of type digfolder/digitem must contain an 'extref' element.
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="containerized-extref-manual">
+    <rule context="//did/container[descendant::extref]">
+      <!-- any 'container' element with an extref-->
+      <!-- We want this to report any text that does not match ruby's /^\s*(DF|DI|etc)-\S+\s*$/
+           but it seems like XSLT flavor of regexp \s does not include tab -->
+      <assert test="matches(.//extref, '^[\s&#x9;]*(DF|DI|DCD|FLD|EKAAMP)-\S*[\s&#x9;]*$')" diagnostics="containerized-extref-identifiers">
+        containerized extrefs must contain DF/DI identifier text. Found: '<value-of select="normalize-space(.//extref)" />'
+      </assert>
+    </rule>
+  </pattern>
+
+  <pattern id="migrating-noncontainerized-extref-manual">
+    <rule context="//*:c/did//unittitle//extref|//*:c01/did//unittitle//extref|//*:c02/did//unittitle//extref|//*:c03/did//unittitle//extref|//*:c04/did//unittitle//extref|//*:c05/did//unittitle//extref|//*:c06/did//unittitle//extref|//*:c07/did//unittitle//extref|//*:c08/did//unittitle//extref|//*:c09/did//unittitle//extref|//*:c10/did//unittitle//extref|//*:c11/did//unittitle//extref|//*:c12/did//unittitle//extref">
+      <!-- migrating noncontainzerized 'extref' elements -->
+      <assert test="not(matches(., '^[\s&#x9;]*[A-Z]+-\S*[\s&#x9;]*$'))" diagnostics="noncontainerized-extref-dfdi-identifiers">
+        noncontainerized migrating extrefs should not have DF/DI identifier-like text:  Found: '<value-of select="normalize-space(.)" />'
       </assert>
     </rule>
   </pattern>
@@ -516,7 +556,10 @@
     <diagnostic id="date-type">Ref-number: AS-243</diagnostic>
     <diagnostic id="date-title">Ref-number: AS-350/AS-243</diagnostic>
     <diagnostic id="langcode">Ref-number: AS-243</diagnostic>
-    <diagnostic id="extref-href">Ref-number: AS-317</diagnostic>
+    <diagnostic id="extref-href">Ref-number: AS-317, AS-358</diagnostic>
+    <diagnostic id="digcontainer-extref">Ref-number: AS-352</diagnostic>
+    <diagnostic id="containerized-extref-identifiers">Ref-number: AS-XXX/AS-353 TODO/TBD</diagnostic>
+    <diagnostic id="noncontainerized-extref-dfdi-identifiers">Ref-number: AS-XXX/AS-353 TODO/TBD</diagnostic>
     <diagnostic id="ead-id-attr">Ref-number: AS-329</diagnostic>
 
     <!--  Logic seems wrong and duplicative?:  -->

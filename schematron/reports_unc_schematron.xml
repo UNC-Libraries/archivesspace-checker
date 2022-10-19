@@ -7,54 +7,41 @@
     <active pattern="nonmigrating-extref-attributes" />
     <active pattern="migrating-extref-attributes" />
     <active pattern="extref-container-types" />
-    <active pattern="containerized-extrefs" />
     <active pattern="audience" />
   </phase>
 
     <pattern id="nonmigrating-extref-attributes">
-    <rule context="//extref">
-    <!-- nonmigrating 'extref' elements (i.e. fall outside of a 'c0x') -->
+    <rule context="//extref[not(ancestor::container) and not(ancestor::unittitle and ancestor::c01)]">
+    <!-- nonmigrating 'extref' elements -->
     <!-- we assume that any c0x is a c01 or descendant of a c01-->
-      <report test="not(ancestor::c01) and (@role or @show or @actuate or @audience)" diagnostics="nonmigrating-extref-attributes">
+      <report test="@role or @show or @actuate or @audience" diagnostics="nonmigrating-extref-attributes">
         nonmigrating extref attrs: '<value-of select="@role" />';'<value-of select="@show" />';'<value-of select="@actuate" />';'<value-of select="@audience" />';
       </report>
-      <report test="not(ancestor::c01)" diagnostics="nonmigrating-extref-attributes">
+      <report test="." diagnostics="nonmigrating-extref-attributes">
         nonmigrating extref href/text: href: '<value-of select="@href" />' text: '<value-of select="." />'
       </report>
     </rule>
   </pattern>
 
   <pattern id="migrating-extref-attributes">
-    <rule context="//*:c//extref|//*:c01//extref|//*:c02//extref|//*:c03//extref|//*:c04//extref|//*:c05//extref|//*:c06//extref|//*:c07//extref|//*:c08//extref|//*:c09//extref|//*:c10//extref|//*:c11//extref|//*:c12//extref">
-    <!-- 'extref' elements that are migrating (i.e. fall under a 'c0x' element) -->
+    <rule context="//did/container//extref|//*:c/did//unittitle//extref|//*:c01/did//unittitle//extref|//*:c02/did//unittitle//extref|//*:c03/did//unittitle//extref|//*:c04/did//unittitle//extref|//*:c05/did//unittitle//extref|//*:c06/did//unittitle//extref|//*:c07/did//unittitle//extref|//*:c08/did//unittitle//extref|//*:c09/did//unittitle//extref|//*:c10/did//unittitle//extref|//*:c11/did//unittitle//extref|//*:c12/did//unittitle//extref">
+    <!-- 'extref' elements that are migrating -->
       <report test="(@role or @show or @actuate or @audience)" diagnostics="extref-attributes">
         migrating extref attrs: '<value-of select="@role" />';'<value-of select="@show" />';'<value-of select="@actuate" />';'<value-of select="@audience" />';
       </report>
       <report test="not(@role or @show or @actuate or @audience)" diagnostics="extref-attributes">
         migrating extref attrs: none
       </report>
-      <report test="not(ancestor::container) and (matches(., '^[\s&#x9;]*[A-Z]+-\S*[\s&#x9;]*$'))" diagnostics="noncontainerized-extref-dfdi-identifiers">
-        noncontainerized migrating extref has DF/DI-like tag: '<value-of select="." />'
-      </report>
     </rule>
   </pattern>
 
   <pattern id="extref-container-types">
-    <rule context="//did//container">
-    <!-- any 'container' element under a 'did'-->
-      <report test=".//extref and not(@type='digfolder' or @type='digitem')" diagnostics="containzerized-extref-container-types">
+    <rule context="//did/container[descendant::extref]">
+    <!-- any 'container' element with an extref-->
+    <!-- extrefs in non-digfolder/digitem containers are allowed and will migrate;
+         this identifies those non-digfolder/digitem container types-->
+      <report test="not(@type='digfolder' or @type='digitem')" diagnostics="containzerized-extref-container-types">
         containerized extref with non df/di type: '<value-of select="@type" />'
-      </report>
-    </rule>
-  </pattern>
-
-  <pattern id="containerized-extrefs">
-    <rule context="//did//container//extref">
-    <!-- any containerized 'extref' element -->
-    <!-- We want this to report any text that does not match ruby's /^\s*D[FI]-\S+\s*$/
-         but it seems like XSLT flavor of regexp \s does not include tab -->
-      <report test="not(matches(., '^[\s&#x9;]*D[FI]-\S*[\s&#x9;]*$'))" diagnostics="containerized-extref-identifiers">
-        extref with non DF/DI identifier text: '<value-of select="." />'
       </report>
     </rule>
   </pattern>
@@ -71,9 +58,7 @@
   <diagnostics>
     <diagnostic id="nonmigrating-extref-attributes">Ref-number: AS-326</diagnostic>
     <diagnostic id="extref-attributes">Ref-number: AS-326</diagnostic>
-    <diagnostic id="noncontainerized-extref-dfdi-identifiers">Ref-number: AS-353</diagnostic>
     <diagnostic id="containzerized-extref-container-types">Ref-number: AS-353</diagnostic>
-    <diagnostic id="containerized-extref-identifiers">Ref-number: AS-353</diagnostic>
     <diagnostic id="audience-attributes">Ref-number: AS-326 (tangent)</diagnostic>
   </diagnostics>
 </schema>
