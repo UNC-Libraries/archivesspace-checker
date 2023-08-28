@@ -366,6 +366,19 @@
       <assert test="text()[normalize-space(.)]" diagnostics="controlaccess-3">
         'controlaccess' children must contain text
       </assert>
+
+      <assert test="not(./descendant::title or ./descendant::corpname or ./descendant::persname or ./descendant::famname
+                        or ./descendant::function or ./descendant::genreform or ./descendant::geogname
+                        or ./descendant::occupation or ./descendant::subject)" diagnostics="controlaccess-4">
+        controlaccess children must not be nested in other controlaccess children.
+      </assert>
+    </rule>
+
+    <rule context="//*:controlaccess//*:item">
+      <!-- 'item' in 'controlaccess'-->
+      <assert test="not(text()[normalize-space(.)])" diagnostics="controlaccess-4">
+        controlaccess 'item' should not contain text outside of the controlaccess child.
+      </assert>
     </rule>
   </pattern>
 
@@ -549,6 +562,10 @@
     <diagnostic id="controlaccess-1">Ref-number: AS-49</diagnostic>
     <diagnostic id="controlaccess-2">Ref-number: AS-98</diagnostic>
     <diagnostic id="controlaccess-3">Ref-number: AS-243</diagnostic>
+    <diagnostic id="controlaccess-4">Ref-number: AS-438</diagnostic>
+    <diagnostic id="controlaccess-5">Ref-number: AS-438
+      CHILD: '<value-of select="./child::*" />' SELF: '<value-of select="text()[normalize-space(.)]" />'
+    </diagnostic>
     <diagnostic id="abstract">Ref-number: AS-243</diagnostic>
     <diagnostic id="component-id">Ref-number: AS-236</diagnostic>
     <diagnostic id="date-type">Ref-number: AS-243</diagnostic>
