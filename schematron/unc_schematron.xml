@@ -346,7 +346,7 @@
       <assert test="count(./*:corpname|./*:persname|./*:famname|./*:function|./*:genreform|./*:geogname|./*:occupation|./*:subject|./*:title|./*:list|./*:head) = count(./*)
                     and count(./*:list/*:item/*:corpname|./*:list/*:item/*:persname|./*:list/*:item/*:famname|
                     ./*:list/*:item/*:function|./*:list/*:item/*:genreform|./*:list/*:item/*:geogname|
-                    ./*:list/*:item/*:occupation|./*:list/*:item/*:subject|./*:list/*:item/*:title) = count(./*:list/*:item/*)"
+                    ./*:list/*:item/*:occupation|./*:list/*:item/*:subject|./*:list/*:item/*:title) = count(./*:list/*:item)"
               diagnostics="controlaccess-1">
         The only 'controlaccess' children that will migrate are: 'corpname', 'persname', 'famname', 'function', 'genreform', 'geogname', 'occupation', 'subject', 'title'.
       </assert>
