@@ -352,19 +352,17 @@
       </assert>
     </rule>
 
-    <rule context="//*:item/*[*:corpname or *:persname or *:famname or *:function or *:genreform or *:geogname
-                  or *:occupation or *:subject or *:title]">
-      <!-- 'controlaccess/list' elements -->
-      <assert test="./ancestor::*/controlaccess" diagnostics="controlaccess-2">
-        Lists containing 'corpname', 'persname', 'famname', 'function', 'genreform', 'geogname', 'occupation', 'subject', or 'title' elements can only be parsed as children of 'controlaccess' elements.
-      </assert>
-    </rule>
-
     <rule context="//*:item/*:corpname|//*:item/*:persname|//*:item/*:famname|
                    //*:item/*:function|//*:item/*:genreform|//*:item/*:geogname|
                    //*:item/*:occupation|//*:item/*:subject|
                    //*:item/*:title">
       <!-- 'controlaccess' children (that are migrating/valid)-->
+
+      <!-- NOTE: we allow 'title' in lists outside of 'controlaccess' -->
+      <assert test="./ancestor::controlaccess or local-name(.) = 'title'" diagnostics="controlaccess-2">
+        Lists containing 'corpname', 'persname', 'famname', 'function', 'genreform', 'geogname', 'occupation', or 'subject' elements can only be parsed as children of 'controlaccess' elements.
+      </assert>
+
       <assert test="text()[normalize-space(.)]" diagnostics="controlaccess-3">
         'controlaccess' children must contain text
       </assert>
