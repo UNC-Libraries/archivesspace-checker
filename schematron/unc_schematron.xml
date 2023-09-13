@@ -376,7 +376,7 @@
 
     <rule context="//*:controlaccess//*:item">
       <!-- 'item' in 'controlaccess'-->
-      <assert test="not(text()[normalize-space(.)])" diagnostics="controlaccess-4">
+      <assert test="not(text()[normalize-space(.)])" diagnostics="controlaccess-5">
         controlaccess 'item' should not contain text outside of the controlaccess child.
       </assert>
     </rule>
