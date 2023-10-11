@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2">
+  <ns uri="http://www.w3.org/1999/xlink" prefix="xlink"/>
+  <ns uri="urn:isbn:1-931666-22-9" prefix="ead"/>
+
+  <phase id="manual">
+    <active pattern="containerless-components" />
+  </phase>
+
+    <pattern id="containerless-components">
+      <rule context="//*:c[not(@level)]|//*:c01[not(@level)]|//*:c02[not(@level)]|//*:c03[not(@level)]|//*:c04[not(@level)]|//*:c05[not(@level)]|//*:c06[not(@level)]|//*:c07[not(@level)]|//*:c08[not(@level)]|//*:c09[not(@level)]|//*:c10[not(@level)]|//*:c11[not(@level)]|//*:c12[not(@level)]">
+      <!-- 'component' elements, any numbered or unnumbered, that lack a level -->
+      <report test="not(./descendant::*/container)" diagnostics="containerless-components-diag">
+      Component wihout a level lacks a container
+      </report>
+    </rule>
+  </pattern>
+
+  <diagnostics>
+    <diagnostic id="containerless-components-diag">Ref-number: AS-472</diagnostic>
+  </diagnostics>
+</schema>
