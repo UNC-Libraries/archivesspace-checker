@@ -20,6 +20,9 @@
       <report test="." diagnostics="nonmigrating-extref-attributes">
         nonmigrating extref href/text: href: '<value-of select="@href" />' text: '<value-of select="." />'
       </report>
+      <report test="." diagnostics="nonmigrating-extref-urls">
+        <value-of select="@href" />
+      </report>
     </rule>
   </pattern>
 
@@ -31,6 +34,10 @@
       </report>
       <report test="not(@role or @show or @actuate or @audience)" diagnostics="extref-attributes">
         migrating extref attrs: none
+      </report>
+
+      <report test="." diagnostics="migrating-urls">
+        <value-of select="@href" />
       </report>
     </rule>
   </pattern>
@@ -60,5 +67,7 @@
     <diagnostic id="extref-attributes">Ref-number: AS-326</diagnostic>
     <diagnostic id="containzerized-extref-container-types">Ref-number: AS-353</diagnostic>
     <diagnostic id="audience-attributes">Ref-number: AS-326 (tangent)</diagnostic>
+    <diagnostic id="migrating-urls">Ref-number: AS-595 (migrating)</diagnostic>
+    <diagnostic id="nonmigrating-extref-urls">Ref-number: AS-595 (nonmigrating)</diagnostic>
   </diagnostics>
 </schema>
