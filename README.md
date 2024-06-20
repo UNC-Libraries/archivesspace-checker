@@ -53,6 +53,58 @@ bundle exec rackup
 
 Then direct your browser to localhost:9292, upload some EADs, and enjoy!
 
+If you get errors on start up make sure there's no WEB-INF directory or archivesspacecheker.rb file in tmp. 
+If so delete them. These are build files from the war that rack doesn't know what to do with.
+
+## Building WAR file for production
+This app wasn't originally meant to be a generated war file
+
+
+So the files need to be rejiggered a bit
+
+1. run 
+```shell
+bundle
+```
+to make sure the warbler gem is installed
+
+1. In Gemfile comment out the following gems (They don't do any harm, but bloat the war file)
+   * gem 'therubyrhino'
+   * gem 'yard'
+   * gem 'yard-sinatra'
+   * gem 'puma'
+   * gem 'rake'
+   * gem 'warbler'
+   
+2. In config/evironment comment out
+   ```ruby
+    if ENV['RACK_ENV'] == 'development'
+    Bundler.require(:development)
+    end
+    Dir['./**/*.rb'].reject {|s| s.match(/\A\.\/(test|config\/deploy)/)}.map { |s| require s.sub(/\.rb\z/, '')}
+    ```
+   
+3. In RakeFile comment out the "test" task
+```ruby
+Bundler.require(:test)
+
+# Need to comment out the rake/testtask block to build war file
+require 'rake/testtask'
+
+Rake::TestTask.new do |t|
+  t.test_files = FileList['test/test*.rb']
+  t.verbose = true
+  t.warning = false
+end
+
+task :default => :test
+```
+
+4. run 
+```sh
+warble compiled war
+```
+
 ## Configuration
 
 Configuration settings can be included by putting a YAML file at `config/config.yml`
