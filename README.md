@@ -1,5 +1,7 @@
 # Archivesspace Checker
 
+ARCHIVED. This project has been archived and is no longer being developed or supported because UNC's migration into ArchivesSpace is complete.
+
 This repository has been forked from Harvard Library's [ArchivesSpace Checker](https://github.com/harvard-library/archivesspace-checker). 
 Major changes include creating a command line analysis tool and customizing the schematron for UNC EADs.
 
